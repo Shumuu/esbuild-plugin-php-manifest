@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-php-manifest",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Plugin for esbuild that'll generate a php manifest which contains an key value array with the input and outputs",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,6 +19,14 @@
   "author": {
     "name": "Philipp Gentz",
     "email": "philippgentz@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shumuu/esbuild-plugin-php-manifest"
+  },
+  "homepage": "https://github.com/Shumuu/esbuild-plugin-php-manifest",
+  "bugs": {
+    "url": "https://github.com/Shumuu/esbuild-plugin-php-manifest/issues"
   },
   "license": "ISC",
   "devDependencies": {
