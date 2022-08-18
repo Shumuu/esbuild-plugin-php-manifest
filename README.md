@@ -4,9 +4,10 @@ This Plugin will generate a PHP File that contains a Class with a static Associa
 
 This Plugin was inspired by [webpack-php-manifest](https://www.npmjs.com/package/webpack-php-manifest)
 
-Example
+Example Output
 
 ```php
+// generated PHP Manifest
 <?php
   class EsbuildPluginPhpManifest {
     static $files = [
@@ -47,3 +48,27 @@ esbuild.build({
   ],
 });
 ```
+
+## Plugin Options
+
+The following Plugin Options are available
+
+### `options.pathPHPManifest`
+
+`string | undefined` Optional Path for the generated PHP Manifest File
+
+### `options.hash`
+
+`string | boolean | undefined`
+
+If `true` or `undefined` it will use the hash provided by `esbuild`. `false` will not use a hash and if passed a `string` it will append the `string` to the file name.
+
+### `options.rewriteManifest`
+
+Optional function that has the signature `rewriteManifest(key: string, value: string): [string, string]`.
+
+So it gets passed the key (the original file name) and the value (the output) and it should return a tuple `[newKey: string, newOuput: string]`.
+
+### `options.namePHPManifestClass`
+
+Optional Class Name for the generated PHP File, defaults to `EsbuildPluginPhpManifest`

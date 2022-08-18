@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-php-manifest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Plugin for esbuild that'll generate a php manifest which contains an key value array with the input and outputs",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
