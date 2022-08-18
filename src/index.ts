@@ -9,9 +9,10 @@ import path from 'path';
  * @returns {[string, string]}
  */
 
-function generateTemplate(files: Array<string>) {
+
+function generateTemplate(files: Array<string>, namePHPManifestClass = "EsbuildPluginPhpManifest") {
   return `<?php
-  class EsbuildPluginPhpManifest {
+  class ${namePHPManifestClass} {
     static $files = [
 ${files.join(',\n')}
       ];
@@ -22,6 +23,7 @@ type PluginProps = {
   pathPHPManifest?: string;
   hash?: boolean | string;
   rewriteManifest?: (key: string, value: string) => [string, string];
+  namePHPManifestClass?: string;
 };
 
 /**
@@ -29,6 +31,7 @@ type PluginProps = {
  * @param {string=} options.pathPHPManifest Optional Path for the generated PHP Manifest File
  * @param {string|boolean=} options.hash Optional Hash, if true we'll use the hash [dir]/[name]-[hash], if it's a string, we'll use that one.
  * @param {RewriteManifest=} options.rewriteManifest Optional Function that receives the key (input File) and the value (output File). It needs to return a tuple [key, value]
+ * @param {string} [options.namePHPManifestClass=EsbuildPluginPhpManifest] Optional Name for the PHP Manifest Class - default is EsbuildPluginPhpManifest
  */
 export = (options: PluginProps): Plugin => ({
   name: 'esbuild-plugin-php-manifest',
