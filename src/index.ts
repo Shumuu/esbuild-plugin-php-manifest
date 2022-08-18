@@ -1,5 +1,6 @@
 import { Plugin } from 'esbuild';
 import fs from 'fs';
+import path from 'path';
 
 /**
  * @typedef {Function} RewriteManifest
@@ -8,9 +9,10 @@ import fs from 'fs';
  * @returns {[string, string]}
  */
 
-function generateTemplate(files: Array<string>) {
+
+function generateTemplate(files: Array<string>, namePHPManifestClass = "EsbuildPluginPhpManifest") {
   return `<?php
-  class EsbuildPluginPhpManifest {
+  class ${namePHPManifestClass} {
     static $files = [
 ${files.join(',\n')}
       ];
@@ -18,22 +20,30 @@ ${files.join(',\n')}
 }
 
 type PluginProps = {
-  pathPHPManifest: string;
+  pathPHPManifest?: string;
+  hash?: boolean | string;
   rewriteManifest?: (key: string, value: string) => [string, string];
+  namePHPManifestClass?: string;
 };
 
 /**
  * @param {Object} options
- * @param {string} options.pathPHPManifest The Path for the generated PHP Manifest File
+ * @param {string=} options.pathPHPManifest Optional Path for the generated PHP Manifest File
+ * @param {string|boolean=} options.hash Optional Hash, if true we'll use the hash [dir]/[name]-[hash], if it's a string, we'll use that one.
  * @param {RewriteManifest=} options.rewriteManifest Optional Function that receives the key (input File) and the value (output File). It needs to return a tuple [key, value]
+ * @param {string} [options.namePHPManifestClass=EsbuildPluginPhpManifest] Optional Name for the PHP Manifest Class - default is EsbuildPluginPhpManifest
  */
 export = (options: PluginProps): Plugin => ({
   name: 'esbuild-plugin-php-manifest',
   setup(build) {
-    if (typeof options.pathPHPManifest !== 'string') {
-      throw new Error('pathPHPManifest was either not provided or is not a string!');
+    const outdir = build.initialOptions.outdir;
+    if (outdir == undefined || typeof outdir !== 'string') {
+      throw new Error('No outdir was provided');
     }
-    build.initialOptions.metafile = true;
+    if (options.hash) {
+      build.initialOptions.entryNames = typeof options.hash === 'string' ? options.hash : '[dir]/[name]-[hash]';
+    }
+    if (options.hash) build.initialOptions.metafile = true;
 
     build.onEnd((result) => {
       // Here we will map the inputFile (key) to the outputFile (value)
@@ -61,7 +71,8 @@ export = (options: PluginProps): Plugin => ({
 
       const templatePHP = generateTemplate(files);
 
-      return fs.promises.writeFile('./php-manifest.php', templatePHP);
+      const pathManifest = options.pathPHPManifest || path.join(outdir, 'php-manifest.php');
+      return fs.promises.writeFile(pathManifest, templatePHP);
     });
   },
 });
