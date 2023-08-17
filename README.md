@@ -40,6 +40,7 @@ const phpManifestPlugin = require('esbuild-plugin-php-manifest');
 esbuild.build({
   entryPoints: ['test.js'],
   bundle: true,
+  metafile: true, // this is needed to the plugin can generate the manifest
   outdir: './out/',
   plugins: [
     phpManifestPlugin({
